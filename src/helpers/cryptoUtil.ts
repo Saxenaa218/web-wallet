@@ -36,3 +36,11 @@ export function decrypt(encryptedText: string, secretKey: string): string {
 
   return decrypted;
 }
+
+// Function to hash a string
+export function hashString(input: string): string {
+  return crypto
+    .createHash("sha256") // Specify the hash algorithm (SHA-256)
+    .update(input) // Add the string to be hashed
+    .digest("hex"); // Convert the hashed output to a hex string
+}

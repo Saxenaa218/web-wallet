@@ -1,9 +1,10 @@
 import { ethers, HDNodeWallet } from "ethers";
 import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { decrypt } from "@/helpers/cryptoUtil";
-import SeedGenerator from "./SeedGenerator";
 import { useWalletStore } from "@/helpers/store";
+import SeedGenerator from "./SeedGenerator";
 
 const createWalletsFromMnemonic = (
   phrase: string,
@@ -43,7 +44,7 @@ export function EthWallets() {
         {wallets.map((wallet) => (
           <div
             key={wallet.address}
-            className="p-4 text-sm text-gray-500 border border-gray-200 rounded-md cursor-pointer"
+            className="flex flex-col gap-2 p-4 text-sm text-gray-500 border border-gray-200 rounded-md cursor-pointer"
           >
             <p>
               <strong>Address:</strong>
@@ -53,7 +54,16 @@ export function EthWallets() {
               <strong>Public Key:</strong>
               <span className="line-clamp-2">{wallet.publicKey}</span>
             </p>
-            <Button onClick={() => deleteWallet(wallet)}>Remove</Button>
+            <div>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteWallet(wallet);
+                }}
+              >
+                Remove
+              </Button>
+            </div>
           </div>
         ))}
       </section>
