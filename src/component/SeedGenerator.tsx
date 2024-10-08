@@ -1,3 +1,5 @@
+"use client";
+
 import { ethers } from "ethers";
 import { useState } from "react";
 
@@ -10,7 +12,9 @@ const SeedGenerator = () => {
     const mnemonic = ethers.Wallet.createRandom().mnemonic;
     setSeedPhrase(mnemonic!.phrase);
     const encrypted = encrypt(mnemonic!.phrase, "secret");
-    localStorage.setItem("seed", encrypted);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("seed", encrypted);
+    }
   };
 
   return (

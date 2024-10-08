@@ -1,3 +1,5 @@
+"use client";
+
 import { ethers, HDNodeWallet } from "ethers";
 import { useEffect, useState } from "react";
 
@@ -20,10 +22,12 @@ export function EthWallets() {
   const { wallets, addWallet, removeWallet } = useWalletStore();
 
   useEffect(() => {
-    const encrypted = localStorage.getItem("seed");
-    if (encrypted) {
-      const decrypted = decrypt(encrypted, "secret");
-      setSeedPhrase(decrypted);
+    if (typeof window !== "undefined") {
+      const encrypted = localStorage.getItem("seed");
+      if (encrypted) {
+        const decrypted = decrypt(encrypted, "secret");
+        setSeedPhrase(decrypted);
+      }
     }
   }, []);
 

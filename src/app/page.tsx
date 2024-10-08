@@ -5,15 +5,17 @@ import AuthComponent from "@/component/AuthComponent";
 
 export default function Home() {
   // set passkey time to 1 hour
-  if (!sessionStorage.getItem("passkeyTime")) {
-    return <AuthComponent />;
-  }
-  const passkeyTime: number = parseInt(
-    sessionStorage.getItem("passkeyTime") || "0"
-  );
-  if (passkeyTime && Date.now() - passkeyTime > 1000 * 60 * 60) {
-    sessionStorage.removeItem("passkeyTime");
-    return <AuthComponent />;
+  if (typeof window !== "undefined") {
+    if (!sessionStorage.getItem("passkeyTime")) {
+      return <AuthComponent />;
+    }
+    const passkeyTime: number = parseInt(
+      sessionStorage.getItem("passkeyTime") || "0"
+    );
+    if (passkeyTime && Date.now() - passkeyTime > 1000 * 60 * 60) {
+      sessionStorage.removeItem("passkeyTime");
+      return <AuthComponent />;
+    }
   }
 
   return (
