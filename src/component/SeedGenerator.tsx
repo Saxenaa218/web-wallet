@@ -5,6 +5,8 @@ import { useState } from "react";
 
 import { encrypt } from "@/helpers/cryptoUtil";
 import { Button } from "@/components/ui/button";
+import { setLocalStorage } from "@/helpers/clientStorage";
+import { SEED } from "@/helpers/constants";
 
 const SeedGenerator = () => {
   const [seedPhrase, setSeedPhrase] = useState<string | null>(null);
@@ -12,9 +14,7 @@ const SeedGenerator = () => {
     const mnemonic = ethers.Wallet.createRandom().mnemonic;
     setSeedPhrase(mnemonic!.phrase);
     const encrypted = encrypt(mnemonic!.phrase, "secret");
-    if (typeof window !== "undefined") {
-      localStorage.setItem("seed", encrypted);
-    }
+    setLocalStorage(SEED, encrypted);
   };
 
   return (

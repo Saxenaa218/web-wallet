@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { HDNodeWallet } from "ethers";
+import { getLocalStorage, setLocalStorage } from "./clientStorage";
+import { WALLETS } from "./constants";
 
 interface WalletStore {
   wallets: HDNodeWallet[];
@@ -9,7 +11,7 @@ interface WalletStore {
 }
 
 const getWalletsFromLocalStorage = () => {
-  const wallets = localStorage.getItem("wallets");
+  const wallets = getLocalStorage(WALLETS);
   return wallets ? JSON.parse(wallets) : [];
 };
 
@@ -18,7 +20,7 @@ export const useWalletStore = create<WalletStore>((set) => ({
   setWallets: (wallets) => set({ wallets }),
   addWallet: (wallet) => {
     const wallets = getWalletsFromLocalStorage();
-    localStorage.setItem("wallets", JSON.stringify([...wallets, wallet]));
+    setLocalStorage(WALLETS, JSON.stringify([...wallets, wallet]));
     set({ wallets: [...wallets, wallet] });
   },
   removeWallet: (wallet) => {
@@ -26,7 +28,7 @@ export const useWalletStore = create<WalletStore>((set) => ({
     const newWallets = wallets.filter(
       (w: HDNodeWallet) => w.address !== wallet.address
     );
-    localStorage.setItem("wallets", JSON.stringify(newWallets));
+    setLocalStorage(WALLETS, JSON.stringify(newWallets));
     set({ wallets: newWallets });
   },
 }));

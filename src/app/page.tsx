@@ -2,20 +2,21 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { EthWallets } from "@/component/EthWallets";
 import AuthComponent from "@/component/AuthComponent";
+import { PASSKEY_TIME, TIME_TO_INVALIDATE_PASSKEY } from "@/helpers/constants";
+import {
+  getSessionStorage,
+  removeSessionStorage,
+} from "@/helpers/clientStorage";
 
 export default function Home() {
-  // set passkey time to 1 hour
-  if (typeof window !== "undefined") {
-    if (!sessionStorage.getItem("passkeyTime")) {
-      return <AuthComponent />;
-    }
-    const passkeyTime: number = parseInt(
-      sessionStorage.getItem("passkeyTime") || "0"
-    );
-    if (passkeyTime && Date.now() - passkeyTime > 1000 * 60 * 60) {
-      sessionStorage.removeItem("passkeyTime");
-      return <AuthComponent />;
-    }
+  // set passkey time to TIME_TO_INVALIDATE_PASSKEY
+  if (!getSessionStorage(PASSKEY_TIME)) {
+    return <AuthComponent />;
+  }
+  const passkeyTime: number = parseInt(getSessionStorage(PASSKEY_TIME) || "0");
+  if (passkeyTime && Date.now() - passkeyTime > TIME_TO_INVALIDATE_PASSKEY) {
+    removeSessionStorage(PASSKEY_TIME);
+    return <AuthComponent />;
   }
 
   return (

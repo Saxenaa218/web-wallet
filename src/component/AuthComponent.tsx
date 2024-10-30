@@ -8,8 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { hashString } from "@/helpers/cryptoUtil";
 import { PASSKEY } from "@/helpers/constants";
+import { useRouter } from "next/navigation";
+import { getSessionStorage, setSessionStorage } from "@/helpers/clientStorage";
 
 const AuthComponent = () => {
+  const router = useRouter();
+
   const [passkey, setPasskey] = useState<string>("");
   const [error, setError] = useState<{ message: string; hasError: boolean }>({
     message: "",
@@ -30,13 +34,17 @@ const AuthComponent = () => {
     }
     setError({ message: "", hasError: false });
     const userInputHash = hashString(passkey);
-    const savedHash = sessionStorage.getItem(PASSKEY);
+    const savedHash = getSessionStorage(PASSKEY);
     if (userInputHash === savedHash) {
-      sessionStorage.setItem("passkeyTime", Date.now().toString());
+      setSessionStorage("passkeyTime", Date.now().toString());
       window.location.reload();
     } else {
       setError({ message: "Invalid passkey", hasError: true });
     }
+  };
+
+  const handleRedirect = () => {
+    router.push("/reset-password");
   };
 
   return (
@@ -57,7 +65,9 @@ const AuthComponent = () => {
             <Button onClick={handleUnlock}>Unlock</Button>
           </section>
           {error.hasError && <p className="text-red-500">{error.message}</p>}
-          <Button variant="link">Forgot password?</Button>
+          <Button variant="link" onClick={handleRedirect}>
+            Forgot password?
+          </Button>
         </section>
       </AlertDialogContent>
     </AlertDialog>

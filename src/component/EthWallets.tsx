@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { decrypt } from "@/helpers/cryptoUtil";
 import { useWalletStore } from "@/helpers/store";
 import SeedGenerator from "./SeedGenerator";
+import { SEED } from "@/helpers/constants";
+import { getLocalStorage } from "@/helpers/clientStorage";
 
 const createWalletsFromMnemonic = (
   phrase: string,
@@ -22,12 +24,10 @@ export function EthWallets() {
   const { wallets, addWallet, removeWallet } = useWalletStore();
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const encrypted = localStorage.getItem("seed");
-      if (encrypted) {
-        const decrypted = decrypt(encrypted, "secret");
-        setSeedPhrase(decrypted);
-      }
+    const encrypted = getLocalStorage(SEED);
+    if (encrypted) {
+      const decrypted = decrypt(encrypted, "secret");
+      setSeedPhrase(decrypted);
     }
   }, []);
 
